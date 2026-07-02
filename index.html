@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>oziro | امین ابراهیمی</title>
+<meta name="description" content="رزومه امین ابراهیمی (oziro) — برنامه‌نویس، طراح سایت و باگ بانتی هانتر" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<style>
+  :root{
+    --bg:#070a12;
+    --bg-2:#0b1020;
+    --panel:rgba(255,255,255,.04);
+    --panel-solid:#0e1424;
+    --border:rgba(120,200,255,.14);
+    --text:#e8eefc;
+    --muted:#8fa3c4;
+    --cyan:#29e7ff;
+    --green:#39ff9e;
+    --purple:#a974ff;
+    --pink:#ff5fa2;
+    --grad:linear-gradient(120deg,var(--cyan),var(--purple) 50%,var(--pink));
+    --shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Vazirmatn',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.9;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'JetBrains Mono',monospace;direction:ltr;display:inline-block}
+
+  /* ===== Animated background ===== */
+  .bg-fx{position:fixed;inset:0;z-index:-2;overflow:hidden}
+  .bg-fx .grid{
+    position:absolute;inset:-50%;
+    background-image:
+      linear-gradient(rgba(41,231,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(41,231,255,.05) 1px,transparent 1px);
+    background-size:60px 60px;
+    transform:perspective(600px) rotateX(60deg);
+    animation:gridmove 18s linear infinite;
+    mask-image:radial-gradient(circle at 50% 40%,#000 0%,transparent 70%);
+  }
+  @keyframes gridmove{to{background-position:0 60px,60px 0}}
+  .bg-fx .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;animation:float 16s ease-in-out infinite}
+  .b1{width:520px;height:520px;background:#1239;left:10%;top:-8%;background:radial-gradient(circle,#1a6cff,transparent)}
+  .b2{width:480px;height:480px;right:-6%;top:18%;background:radial-gradient(circle,#a974ff,transparent);animation-delay:-4s}
+  .b3{width:420px;height:420px;left:35%;bottom:-12%;background:radial-gradient(circle,#29e7ff,transparent);animation-delay:-8s}
+  @keyframes float{0%,100%{transform:translate(0,0)}33%{transform:translate(40px,-30px)}66%{transform:translate(-30px,20px)}}
+  .noise{position:fixed;inset:0;z-index:-1;opacity:.04;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ===== Nav ===== */
+  nav{
+    position:fixed;top:0;inset-inline:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 6vw;
+    transition:.35s;
+    backdrop-filter:blur(0px);
+  }
+  nav.scrolled{background:rgba(7,10,18,.7);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:12px 6vw}
+  .logo{font-weight:800;font-size:1.5rem;letter-spacing:1px}
+  .logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .logo .dot{color:var(--green)}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:.95rem;font-weight:500;position:relative;transition:.25s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--grad);transition:.3s}
+  .nav-links a:hover::after{width:100%}
+  .burger{display:none;font-size:1.6rem;cursor:pointer;color:var(--cyan)}
+
+  /* ===== Lang Toggle ===== */
+  .lang-toggle{
+    display:flex;align-items:center;gap:6px;
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:12px;padding:8px 14px;
+    color:var(--muted);cursor:pointer;font-family:inherit;
+    font-size:.85rem;font-weight:600;transition:.28s;
+  }
+  .lang-toggle:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+  .lang-toggle i{font-size:1.1rem;transition:transform .4s}
+  .lang-toggle:hover i{transform:rotate(20deg)}
+
+  /* ===== Layout ===== */
+  section{padding:120px 6vw;position:relative}
+  .container{max-width:1180px;margin:0 auto}
+  .eyebrow{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:14px;direction:ltr;justify-content:flex-start}
+  .eyebrow::before{content:"";width:40px;height:2px;background:var(--grad)}
+  .section-title{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:800;line-height:1.3;margin-bottom:16px}
+  .section-title b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .section-sub{color:var(--muted);max-width:640px;margin-bottom:50px}
+
+  /* ===== Hero ===== */
+  #hero{min-height:100vh;display:flex;align-items:center;padding-top:140px}
+  .hero-grid{display:grid;grid-template-columns:1.3fr .9fr;gap:50px;align-items:center}
+  .hello{color:var(--cyan);font-family:'JetBrains Mono',monospace;direction:ltr;margin-bottom:18px}
+  .hero-name{font-size:clamp(2.6rem,7vw,4.6rem);font-weight:900;line-height:1.1;margin-bottom:6px}
+  .hero-name b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-real{color:var(--muted);font-size:1.15rem;margin-bottom:22px}
+  .typed-wrap{font-size:clamp(1.1rem,2.4vw,1.6rem);font-weight:700;color:var(--green);min-height:2.2em;margin-bottom:26px}
+  .typed{border-left:2px solid var(--green);padding-left:10px}
+  .hero-text{color:var(--muted);max-width:560px;margin-bottom:34px;font-size:1.05rem}
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:40px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:.28s;font-family:inherit;font-size:1rem}
+  .btn-primary{background:var(--grad);color:#06101a;box-shadow:0 10px 30px rgba(41,231,255,.25)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(169,116,255,.35)}
+  .btn-ghost{border-color:var(--border);color:var(--text);background:var(--panel)}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px)}
+  .hero-socials{display:flex;gap:18px}
+  .hero-socials a{width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:var(--panel);border:1px solid var(--border);color:var(--muted);font-size:1.2rem;transition:.28s}
+  .hero-socials a:hover{color:var(--bg);background:var(--grad);transform:translateY(-4px) rotate(-6deg);border-color:transparent}
+
+  /* profile card */
+  .hero-card{position:relative;justify-self:center}
+  .hero-img-wrap{position:relative;width:min(340px,80vw);aspect-ratio:1;border-radius:30px;padding:3px;background:var(--grad);box-shadow:var(--shadow)}
+  .hero-img-wrap::before{content:"";position:absolute;inset:-14px;border-radius:34px;background:var(--grad);filter:blur(28px);opacity:.4;z-index:-1;animation:pulse 4s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.6}}
+  .hero-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:27px;display:block;background:var(--bg-2)}
+  .hero-badges{position:absolute;inset-inline-start:-26px;inset-block-end:24px;display:flex;flex-direction:column;gap:12px}
+  .hero-badge{background:var(--panel-solid);border:1px solid var(--border);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:.85rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  .hero-badge i{font-size:1.1rem}
+  .hero-badge.cy i{color:var(--cyan)}
+  .hero-badge.gr i{color:var(--green)}
+  .float-tag{position:absolute;inset-inline-end:-18px;inset-block-start:30px;background:var(--panel-solid);border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple);box-shadow:var(--shadow);animation:float 5s ease-in-out infinite}
+
+  .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.8rem;letter-spacing:2px;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scroll-cue .mouse{width:24px;height:40px;border:2px solid var(--border);border-radius:14px;position:relative}
+  .scroll-cue .mouse::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:4px;height:8px;background:var(--cyan);border-radius:4px;animation:scrolldot 1.6s infinite}
+  @keyframes scrolldot{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}80%{opacity:0;transform:translate(-50%,14px)}}
+
+  /* ===== About ===== */
+  .about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:start}
+  .about-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:34px;backdrop-filter:blur(10px)}
+  .about-card p{color:#cdd8ee;margin-bottom:16px}
+  .about-card p:last-child{margin-bottom:0}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:24px;text-align:center;transition:.3s}
+  .stat:hover{transform:translateY(-6px);border-color:var(--cyan)}
+  .stat .num{font-size:2.4rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:'JetBrains Mono',monospace;direction:ltr}
+  .stat .lbl{color:var(--muted);font-size:.9rem;margin-top:6px}
+
+  /* ===== Skills ===== */
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+  .skill-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:26px;transition:.35s;position:relative;overflow:hidden}
+  .skill-card::before{content:"";position:absolute;inset:0;background:var(--grad);opacity:0;transition:.35s;z-index:0}
+  .skill-card:hover{transform:translateY(-8px);border-color:transparent}
+  .skill-card:hover::before{opacity:.08}
+  .skill-card>*{position:relative;z-index:1}
+  .skill-card .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;background:var(--panel-solid);border:1px solid var(--border);margin-bottom:16px}
+  .skill-card h3{font-size:1.1rem;margin-bottom:8px}
+  .skill-card p{color:var(--muted);font-size:.9rem}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:.75rem;padding:4px 10px;border-radius:8px;background:var(--panel-solid);border:1px solid var(--border);color:var(--cyan)}
+
+  /* ===== Timeline ===== */
+  .timeline{position:relative;max-width:880px;margin:0 auto}
+  .timeline::before{content:"";position:absolute;inset-block:0;inset-inline-start:50%;width:2px;background:linear-gradient(var(--cyan),var(--purple),var(--pink));transform:translateX(50%)}
+  .tl-item{position:relative;width:50%;padding:0 40px 50px 0;inset-inline-start:0}
+  .tl-item:nth-child(even){inset-inline-start:50%;padding:0 0 50px 40px}
+  .tl-dot{position:absolute;inset-inline-end:-9px;top:6px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:3px solid var(--cyan);box-shadow:0 0 0 4px rgba(41,231,255,.15)}
+  .tl-item:nth-child(even) .tl-dot{inset-inline-end:auto;inset-inline-start:-9px;border-color:var(--purple)}
+  .tl-content{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:22px 24px;backdrop-filter:blur(10px);transition:.35s}
+  .tl-content:hover{transform:scale(1.03);border-color:var(--cyan);box-shadow:var(--shadow)}
+  .tl-date{font-family:'JetBrains Mono',monospace;color:var(--green);font-size:.8rem;direction:ltr;margin-bottom:8px;display:inline-block}
+  .tl-content h3{font-size:1.15rem;margin-bottom:8px}
+  .tl-content p{color:var(--muted);font-size:.92rem}
+  [dir="rtl"] .tl-item:nth-child(even){inset-inline-start:50%}
+
+  /* ===== Projects ===== */
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+  .proj-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:0;overflow:hidden;transition:.4s;display:flex;flex-direction:column}
+  .proj-card:hover{transform:translateY(-10px);border-color:var(--cyan);box-shadow:var(--shadow)}
+  .proj-top{height:130px;background:var(--grad);position:relative;overflow:hidden;display:grid;place-items:center}
+  .proj-top i{font-size:2.4rem;color:#06101a;opacity:.9}
+  .proj-top::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.4),transparent 60%)}
+  .proj-body{padding:24px;flex:1;display:flex;flex-direction:column}
+  .proj-body h3{font-size:1.2rem;margin-bottom:8px}
+  .proj-body p{color:var(--muted);font-size:.92rem;flex:1;margin-bottom:16px}
+  .proj-links{display:flex;gap:14px}
+  .proj-links a{font-size:.88rem;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;transition:.25s}
+  .proj-links a:hover{color:var(--green);gap:10px}
+
+  /* ===== Security ===== */
+  .sec-wrap{background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:40px;backdrop-filter:blur(10px);position:relative;overflow:hidden}
+  .sec-wrap::before{content:"";position:absolute;inset-inline-end:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--green),transparent);opacity:.12}
+  .sec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:30px}
+  .sec-card{background:var(--panel-solid);border:1px solid var(--border);border-radius:18px;padding:26px;transition:.35s}
+  .sec-card:hover{transform:translateY(-6px);border-color:var(--green)}
+  .sec-card .si{width:50px;height:50px;border-radius:12px;display:grid;place-items:center;font-size:1.4rem;background:rgba(57,255,158,.12);color:var(--green);margin-bottom:14px}
+  .sec-card h3{font-size:1.1rem;margin-bottom:8px}
+  .sec-card p{color:var(--muted);font-size:.92rem}
+
+  /* ===== Contact ===== */
+  #contact{text-align:center}
+  .contact-box{background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:50px;backdrop-filter:blur(10px);max-width:760px;margin:0 auto}
+  .contact-box .big{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;margin-bottom:16px}
+  .contact-box .big b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .contact-box p{color:var(--muted);margin-bottom:30px}
+  .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:620px;margin:0 auto}
+  .contact-item{background:var(--panel-solid);border:1px solid var(--border);border-radius:16px;padding:20px;transition:.3s;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .contact-item:hover{transform:translateY(-5px);border-color:var(--cyan)}
+  .contact-item i{font-size:1.6rem;color:var(--cyan)}
+  .contact-item .l{font-size:.8rem;color:var(--muted)}
+  .contact-item .v{font-family:'JetBrains Mono',monospace;font-size:.85rem;direction:ltr}
+
+  footer{padding:30px 6vw;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--border)}
+  footer b{color:var(--cyan)}
+
+  /* ===== Reveal animations ===== */
+  .reveal{opacity:0;transform:translateY(40px);transition:.8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.left{transform:translateX(-50px)}
+  .reveal.right{transform:translateX(50px)}
+  .reveal.left.in,.reveal.right.in{transform:none}
+  .reveal.scale{transform:scale(.9)}
+  .reveal.scale.in{transform:none}
+  .tl-item .reveal{transform:translateY(30px)}
+
+  /* ===== Responsive ===== */
+  @media (max-width:900px){
+    .hero-grid,.about-grid{grid-template-columns:1fr}
+    .hero-card{order:-1;margin-bottom:30px}
+    .timeline::before{inset-inline-start:8px;transform:none}
+    .tl-item,.tl-item:nth-child(even){width:100%;inset-inline-start:0;padding:0 0 40px 36px}
+    .tl-dot{inset-inline-start:-1px!important;inset-inline-end:auto!important}
+  }
+  @media (max-width:680px){
+    .nav-links{position:fixed;inset:0 0 0 auto;background:rgba(7,10,18,.96);backdrop-filter:blur(20px);flex-direction:column;justify-content:center;width:75%;transform:translateX(100%);transition:.4s;gap:34px}
+    .nav-links.open{transform:none}
+    .nav-links a{font-size:1.2rem}
+    .burger{display:block;z-index:101}
+    section{padding:90px 6vw}
+    .hero-badges{position:static;flex-direction:row;flex-wrap:wrap;margin-top:18px}
+    .float-tag{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-fx" aria-hidden="true">
+  <div class="grid"></div>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="noise"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="#hero" class="logo">oziro<span class="dot">.</span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about" data-i18n="nav.about">درباره من</a>
+    <a href="#skills" data-i18n="nav.skills">مهارت‌ها</a>
+    <a href="#path" data-i18n="nav.path">مسیر</a>
+    <a href="#projects" data-i18n="nav.projects">نمونه‌کارها</a>
+    <a href="#security" data-i18n="nav.security">امنیت</a>
+    <a href="#contact" data-i18n="nav.contact">تماس</a>
+  </div>
+  <button class="lang-toggle" id="langToggle" title="Switch language">
+    <i class="fa-solid fa-globe"></i>
+    <span class="lang-label" data-i18n="lang.label">EN</span>
+  </button>
+  <i class="fa-solid fa-bars burger" id="burger"></i>
+</nav>
+
+<!-- Hero -->
+<header id="hero">
+  <div class="container hero-grid">
+    <div class="hero-info">
+      <div class="hello reveal">// &lt;hello world/&gt;</div>
+      <h1 class="hero-name reveal" data-i18n="hero.name">من <b>oziro</b> هستم</h1>
+      <div class="hero-real reveal" data-i18n="hero.real">امین ابراهیمی · دانشجوی دانشگاه تبریز</div>
+      <div class="typed-wrap reveal"><span class="typed" id="typed"></span></div>
+      <p class="hero-text reveal" data-i18n="hero.desc">برنامه‌نویس و طراح سایت با تمرکز روی ساخت محصولاتی تمیز، سریع و واکنش‌گرا. در کنارش، روی باگ بانتی و امنیت وب کار می‌کنم و دو آزمایشگاه امنیتی هم منتشر کردم. هدفم رسیدن به درآمد از طراحی سایت و در بلندمدت ورود کامل به حوزه‌ی امنیت‌ئه.</p>
+      <div class="hero-cta reveal">
+        <a href="#projects" class="btn btn-primary"><i class="fa-solid fa-eye"></i> <span data-i18n="hero.cta1">دیدن نمونه‌کارها</span></a>
+        <a href="#contact" class="btn btn-ghost"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="hero.cta2">تماس بگیر</span></a>
+      </div>
+      <div class="hero-socials reveal">
+        <a href="https://github.com/zero19bit" target="_blank" data-i18n-title="social.github" title="گیت‌هاب"><i class="fa-brands fa-github"></i></a>
+        <a href="https://ozirosec.ir" target="_blank" data-i18n-title="social.site" title="سایت امنیتی"><i class="fa-solid fa-shield-halved"></i></a>
+        <a href="#contact" data-i18n-title="social.email" title="ایمیل"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+    <div class="hero-card reveal scale">
+      <div class="hero-img-wrap">
+        <img src="ChatGPT Image Jun 18, 2026, 01_22_04 AM.png" alt="Amin Ebrahimi - oziro" onerror="this.style.display='none'"/>
+      </div>
+      <div class="hero-badges">
+        <div class="hero-badge cy"><i class="fa-solid fa-code"></i> Multi-language Dev</div>
+        <div class="hero-badge gr"><i class="fa-solid fa-bug"></i> Bug Bounty Hunter</div>
+      </div>
+      <div class="float-tag">&lt;/oziro&gt;</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="mouse"></div>SCROLL</div>
+</header>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="eyebrow reveal" data-i18n="about.eyebrow">01 — درباره من</div>
+    <h2 class="section-title reveal" data-i18n="about.title">یه <b>برنامه‌نویس</b> با نگاه <b>امنیتی</b></h2>
+    <div class="about-grid">
+      <div class="about-card reveal left">
+        <p data-i18n="about.p1">سلام! من امین ابراهیمی‌ام، بیشتر با نام <b>oziro</b> شناخته می‌شم. دانشجوی دانشگاه تبریز هستم و از ترکیب برنامه‌نویسی و امنیت خوشم میاد.</p>
+        <p data-i18n="about.p2">تا حالا با زبان‌ها و تکنولوژی‌های زیادی کار کردم و طراحی سایت رو به‌عنوان مسیر کوتاه‌مدت برای درآمدزایی انتخاب کردم. در کنارش، باگ بانتی و امنیت وب رو به‌عنوان هدف بلندمدتم دنبال می‌کنم و تا الان دو آزمایشگاه امنیتی برای تمرین باگ بانتی ساختم که توی گیت‌هابم موجوده.</p>
+        <p data-i18n="about.p3">برام مهمه که چیزی که می‌سازم هم خوب به‌نظر برسه، هم واقعاً امن و بهینه کار کنه.</p>
+      </div>
+      <div class="stats reveal right">
+        <div class="stat"><div class="num" data-count="2">0</div><div class="lbl" data-i18n="stat.lab">آزمایشگاه امنیتی</div></div>
+        <div class="stat"><div class="num" data-count="15" data-suffix="+">0</div><div class="lbl" data-i18n="stat.lang">زبان و تکنولوژی</div></div>
+        <div class="stat"><div class="num" data-count="1">0</div><div class="lbl" data-i18n="stat.site">سایت اختصاصی امنیت</div></div>
+        <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl" data-i18n="stat.passion">اشتیاق برای یادگیری</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="container">
+    <div class="eyebrow reveal" data-i18n="skills.eyebrow">02 — مهارت‌ها</div>
+    <h2 class="section-title reveal" data-i18n="skills.title">چیزایی که <b>بلدم</b></h2>
+    <p class="section-sub reveal" data-i18n="skills.sub">با طیف وسیعی از زبان‌ها و ابزارها کار کردم؛ از فرانت‌اند سایت تا اسکریپت‌های امنیتی.</p>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="ico" style="color:var(--cyan)"><i class="fa-solid fa-laptop-code"></i></div>
+        <h3 data-i18n="skill1.title">طراحی و توسعه وب</h3>
+        <p data-i18n="skill1.desc">ساخت سایت‌های واکنش‌گرا، سریع و خوش‌طراحی با تمرکز روی تجربه‌ی کاربری.</p>
+        <div class="tag-row"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span><span class="tag">React</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="ico" style="color:var(--green)"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 data-i18n="skill2.title">امنیت و باگ بانتی</h3>
+        <p data-i18n="skill2.desc">کشف آسیب‌پذیری، تست نفوذ وب و ساخت آزمایشگاه برای تمرین باگ بانتی.</p>
+        <div class="tag-row"><span class="tag">Burp Suite</span><span class="tag">Recon</span><span class="tag">OWASP</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="ico" style="color:var(--purple)"><i class="fa-solid fa-code-branch"></i></div>
+        <h3 data-i18n="skill3.title">برنامه‌نویسی چندزبانه</h3>
+        <p data-i18n="skill3.desc">کار با زبان‌های مختلف برای حل مسائل مختلف؛ از اتوماسیون تا بک‌اند.</p>
+        <div class="tag-row"><span class="tag">Python</span><span class="tag">PHP</span><span class="tag">Node</span><span class="tag">C</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="ico" style="color:var(--pink)"><i class="fa-solid fa-server"></i></div>
+        <h3 data-i18n="skill4.title">ابزار و زیرساخت</h3>
+        <p data-i18n="skill4.desc">کار با لینوکس، گیت و ابزارهای خط فرمان برای توسعه و امنیت.</p>
+        <div class="tag-row"><span class="tag">Linux</span><span class="tag">Git</span><span class="tag">Docker</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Path -->
+<section id="path">
+  <div class="container">
+    <div class="eyebrow reveal" data-i18n="path.eyebrow">03 — مسیر من</div>
+    <h2 class="section-title reveal" data-i18n="path.title">از کجا <b>شروع</b> کردم و کجام</h2>
+    <p class="section-sub reveal" data-i18n="path.sub">یه نگاه به نقاط کلیدی مسیری که طی کردم.</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal left">
+          <span class="tl-date">STEP 01</span>
+          <h3 data-i18n="step1.title">شروع برنامه‌نویسی</h3>
+          <p data-i18n="step1.desc">با کنجکاوی وارد دنیای کد شدم و با چند زبان مختلف کار کردم تا پایه‌هام محکم بشه.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal right">
+          <span class="tl-date">STEP 02</span>
+          <h3 data-i18n="step2.title">ورود به طراحی سایت</h3>
+          <p data-i18n="step2.desc">طراحی وب رو به‌عنوان مسیر کوتاه‌مدت برای درآمدزایی انتخاب کردم و پروژه‌های واکنش‌گرا ساختم.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal left">
+          <span class="tl-date">STEP 03</span>
+          <h3 data-i18n="step3.title">ورود به دانشگاه تبریز</h3>
+          <p data-i18n="step3.desc">تحصیل در دانشگاه تبریز و تعمیق دانش تئوری در کنار پروژه‌های عملی.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal right">
+          <span class="tl-date">STEP 04</span>
+          <h3 data-i18n="step4.title">شروع باگ بانتی</h3>
+          <p data-i18n="step4.desc">تمرکز روی امنیت وب و شروع فعالیت در باگ بانتی برای کشف آسیب‌پذیری‌های واقعی.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal left">
+          <span class="tl-date">STEP 05</span>
+          <h3 data-i18n="step5.title">ساخت آزمایشگاه‌های امنیتی</h3>
+          <p data-i18n="step5.desc">دو آزمایشگاه امنیتی برای تمرین باگ بانتی طراحی و منتشر کردم که توی گیت‌هابم در دسترسه.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content reveal right">
+          <span class="tl-date">STEP 06 — NOW</span>
+          <h3 data-i18n="step6.title">راه‌اندازی ozirosec.ir</h3>
+          <p data-i18n="step6.desc">سایت اختصاصی امنیتی‌ام رو راه‌اندازی کردم و هدفم ورود کامل به حوزه‌ی امنیت در بلندمدته.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="container">
+    <div class="eyebrow reveal" data-i18n="proj.eyebrow">04 — نمونه‌کارها</div>
+    <h2 class="section-title reveal" data-i18n="proj.title">چیزایی که <b>ساختم</b></h2>
+    <p class="section-sub reveal" data-i18n="proj.sub">گزیده‌ای از پروژه‌ها در حوزه‌ی توسعه و امنیت.</p>
+    <div class="proj-grid">
+      <div class="proj-card reveal scale">
+        <div class="proj-top"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="proj-body">
+          <h3>ozirosec.ir</h3>
+          <p data-i18n="proj1.desc">سایت اختصاصی امنیتی من؛ نقطه‌ی تمركز فعالیت‌های باگ بانتی و امنیت وب.</p>
+          <div class="proj-links">
+            <a href="https://ozirosec.ir" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="proj.view">مشاهده</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal scale">
+        <div class="proj-top" style="background:linear-gradient(120deg,var(--green),var(--cyan))"><i class="fa-solid fa-flask"></i></div>
+        <div class="proj-body">
+          <h3 data-i18n="proj2.title">آزمایشگاه امنیتی ۱</h3>
+          <p data-i18n="proj2.desc">محیط تمرین باگ بانتی با آسیب‌پذیری‌های طراحی‌شده برای یادگیری و تمرین کشف باگ.</p>
+          <div class="proj-links">
+            <a href="https://github.com/zero19bit/LaravelSite_Sec_Lab" target="_blank"><i class="fa-brands fa-github"></i> <span data-i18n="proj.github">گیت‌هاب</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal scale">
+        <div class="proj-top" style="background:linear-gradient(120deg,var(--purple),var(--pink))"><i class="fa-solid fa-flask-vial"></i></div>
+        <div class="proj-body">
+          <h3 data-i18n="proj3.title">آزمایشگاه امنیتی ۲</h3>
+          <p data-i18n="proj3.desc">دومین آزمایشگاه باگ بانتی با سناریوهای متفاوت برای تمرین پیشرفته‌تر.</p>
+          <div class="proj-links">
+            <a href="https://github.com/zero19bit/WebSec-Lab-En" target="_blank"><i class="fa-brands fa-github"></i> <span data-i18n="proj.github">گیت‌هاب</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal scale">
+        <div class="proj-top" style="background:linear-gradient(120deg,var(--pink),var(--purple))"><i class="fa-solid fa-display"></i></div>
+        <div class="proj-body">
+          <h3 data-i18n="proj4.title">پروژه‌های طراحی سایت</h3>
+          <p data-i18n="proj4.desc">ساخت سایت‌های واکنش‌گرا و سفارشی برای مشتریان با تمرکز روی سرعت و کیفیت.</p>
+          <div class="proj-links">
+            <a href="#contact"><i class="fa-solid fa-comments"></i> <span data-i18n="proj.request">درخواست نمونه</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Security -->
+<section id="security">
+  <div class="container">
+    <div class="eyebrow reveal" data-i18n="sec.eyebrow">05 — امنیت</div>
+    <h2 class="section-title reveal" data-i18n="sec.title">باگ بانتی و <b>امنیت وب</b></h2>
+    <div class="sec-wrap reveal">
+      <p data-i18n="sec.desc">امنیت برام فقط یه مهارت نیست، یه طرز فکره. توی باگ بانتی سعی می‌کنم مثل یه مهاجم فکر کنم و قبل از зло‌استفاده‌کننده‌ها، آسیب‌پذیری‌ها رو پیدا کنم. برای یادگیری عملی، دو آزمایشگاه امنیتی ساختم که توشون می‌شه باگ‌های واقعی رو تمرین کرد.</p>
+      <div class="sec-grid">
+        <div class="sec-card">
+          <div class="si"><i class="fa-solid fa-bug-slash"></i></div>
+          <h3 data-i18n="sec1.title">تست نفوذ وب</h3>
+          <p data-i18n="sec1.desc">کشف آسیب‌پذیری‌های OWASP و کار با ابزارهایی مثل Burp Suite.</p>
+        </div>
+        <div class="sec-card">
+          <div class="si"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+          <h3 data-i18n="sec2.title">Recon و شناخت هدف</h3>
+          <p data-i18n="sec2.desc">جمع‌آوری اطلاعات و پیدا کردن سطح حمله قبل از تست.</p>
+        </div>
+        <div class="sec-card">
+          <div class="si"><i class="fa-solid fa-vial"></i></div>
+          <h3 data-i18n="sec3.title">ساخت آزمایشگاه</h3>
+          <p data-i18n="sec3.desc">طراحی محیط‌های تمرینی برای یادگیری عملی باگ بانتی.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <div class="eyebrow reveal" style="justify-content:center" data-i18n="contact.eyebrow">06 — تماس</div>
+    <div class="contact-box reveal scale">
+      <h2 class="big" data-i18n="contact.title">بیا با هم <b>کار</b> کنیم</h2>
+      <p data-i18n="contact.sub">چه برای طراحی سایت، چه برای همکاری امنیتی — خوشحال می‌شم در ارتباط باشیم.</p>
+      <div class="contact-grid">
+        <a class="contact-item" href="https://github.com/zero19bit" target="_blank">
+          <i class="fa-brands fa-github"></i>
+          <span class="l" data-i18n="contact.github">گیت‌هاب</span>
+          <span class="v">zero19bit</span>
+        </a>
+        <a class="contact-item" href="https://ozirosec.ir" target="_blank">
+          <i class="fa-solid fa-globe"></i>
+          <span class="l" data-i18n="contact.site">سایت</span>
+          <span class="v">ozirosec.ir</span>
+        </a>
+        <a class="contact-item" href="mailto:contact@ozirosec.ir">
+          <i class="fa-solid fa-envelope"></i>
+          <span class="l" data-i18n="contact.email">ایمیل</span>
+          <span class="v">contact@ozirosec.ir</span>
+        </a>
+      </div>
+      <div style="margin-top:30px"><a href="mailto:contact@ozirosec.ir" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="contact.cta">ارسال پیام</span></a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span data-i18n="footer.text">ساخته‌شده با</span> <i class="fa-solid fa-heart" style="color:var(--pink)"></i> <span data-i18n="footer.by">توسط</span> <b>oziro</b> · Amin Ebrahimi © <span id="year"></span>
+</footer>
+
+<script>
+(function(){
+  // ===== Translations =====
+  const T = {
+    fa: {
+      "lang.label": "EN",
+      "nav.about": "درباره من",
+      "nav.skills": "مهارت\u200cها",
+      "nav.path": "مسیر",
+      "nav.projects": "نمونه\u200cکارها",
+      "nav.security": "امنیت",
+      "nav.contact": "تماس",
+      "hero.name": "من <b>oziro</b> هستم",
+      "hero.real": "امین ابراهیمی · دانشجوی دانشگاه تبریز",
+      "hero.desc": "برنامه\u200cنویس و طراح سایت با تمرکز روی ساخت محصولاتی تمیز، سریع و واکنش\u200cگرا. در کنارش، روی باگ بانتی و امنیت وب کار می\u200cکنم و دو آزمایشگاه امنیتی هم منتشر کردم. هدفم رسیدن به درآمد از طراحی سایت و در بلندمدت ورود کامل به حوزه\u200cی امنیت\u200cئه.",
+      "hero.cta1": "دیدن نمونه\u200cکارها",
+      "hero.cta2": "تماس بگیر",
+      "social.github": "گیت\u200cهاب",
+      "social.site": "سایت امنیتی",
+      "social.email": "ایمیل",
+      "about.eyebrow": "01 — درباره من",
+      "about.title": "یه <b>برنامه\u200cنویس</b> با نگاه <b>امنیتی</b>",
+      "about.p1": "سلام! من امین ابراهیمی\u200cام، بیشتر با نام <b>oziro</b> شناخته می\u200cشم. دانشجوی دانشگاه تبریز هستم و از ترکیب برنامه\u200cنویسی و امنیت خوشم میاد.",
+      "about.p2": "تا حالا با زبان\u200cها و تکنولوژی\u200cهای زیادی کار کردم و طراحی سایت رو به\u200cعنوان مسیر کوتاه\u200cمدت برای درآمدزایی انتخاب کردم. در کنارش، باگ بانتی و امنیت وب رو به\u200cعنوان هدف بلندمدتم دنبال می\u200cکنم و تا الان دو آزمایشگاه امنیتی برای تمرین باگ بانتی ساختم که توی گیت\u200cهابم موجوده.",
+      "about.p3": "برام مهمه که چیزی که می\u200cسازم هم خوب به\u200cنظر برسه، هم واقعاً امن و بهینه کار کنه.",
+      "stat.lab": "آزمایشگاه امنیتی",
+      "stat.lang": "زبان و تکنولوژی",
+      "stat.site": "سایت اختصاصی امنیت",
+      "stat.passion": "اشتیاق برای یادگیری",
+      "skills.eyebrow": "02 — مهارت\u200cها",
+      "skills.title": "چیزایی که <b>بلدم</b>",
+      "skills.sub": "با طیف وسیعی از زبان\u200cها و ابزارها کار کردم؛ از فرانت\u200cاند سایت تا اسکریپت\u200cهای امنیتی.",
+      "skill1.title": "طراحی و توسعه وب",
+      "skill1.desc": "ساخت سایت\u200cهای واکنش\u200cگرا، سریع و خوش\u200cطراحی با تمرکز روی تجربه\u200cی کاربری.",
+      "skill2.title": "امنیت و باگ بانتی",
+      "skill2.desc": "کشف آسیب\u200cپذیری، تست نفوذ وب و ساخت آزمایشگاه برای تمرین باگ بانتی.",
+      "skill3.title": "برنامه\u200cنویسی چندزبانه",
+      "skill3.desc": "کار با زبان\u200cهای مختلف برای حل مسائل مختلف؛ از اتوماسیون تا بک\u200cاند.",
+      "skill4.title": "ابزار و زیرساخت",
+      "skill4.desc": "کار با لینوکس، گیت و ابزارهای خط فرمان برای توسعه و امنیت.",
+      "path.eyebrow": "03 — مسیر من",
+      "path.title": "از کجا <b>شروع</b> کردم و کجام",
+      "path.sub": "یه نگاه به نقاط کلیدی مسیری که طی کردم.",
+      "step1.title": "شروع برنامه\u200cنویسی",
+      "step1.desc": "با کنجکاوی وارد دنیای کد شدم و با چند زبان مختلف کار کردم تا پایه\u200cهام محکم بشه.",
+      "step2.title": "ورود به طراحی سایت",
+      "step2.desc": "طراحی وب رو به\u200cعنوان مسیر کوتاه\u200cمدت برای درآمدزایی انتخاب کردم و پروژه\u200cهای واکنش\u200cگرا ساختم.",
+      "step3.title": "ورود به دانشگاه تبریز",
+      "step3.desc": "تحصیل در دانشگاه تبریز و تعمیق دانش تئوری در کنار پروژه\u200cهای عملی.",
+      "step4.title": "شروع باگ بانتی",
+      "step4.desc": "تمرکز روی امنیت وب و شروع فعالیت در باگ بانتی برای کشف آسیب\u200cپذیری\u200cهای واقعی.",
+      "step5.title": "ساخت آزمایشگاه\u200cهای امنیتی",
+      "step5.desc": "دو آزمایشگاه امنیتی برای تمرین باگ بانتی طراحی و منتشر کردم که توی گیت\u200cهابم در دسترسه.",
+      "step6.title": "راه\u200cاندازی ozirosec.ir",
+      "step6.desc": "سایت اختصاصی امنیتی\u200cام رو راه\u200cاندازی کردم و هدفم ورود کامل به حوزه\u200cی امنیت در بلندمدته.",
+      "proj.eyebrow": "04 — نمونه\u200cکارها",
+      "proj.title": "چیزایی که <b>ساختم</b>",
+      "proj.sub": "گزیده\u200cای از پروژه\u200cها در حوزه\u200cی توسعه و امنیت.",
+      "proj1.desc": "سایت اختصاصی امنیتی من؛ نقطه\u200cی تمركز فعالیت\u200cهای باگ بانتی و امنیت وب.",
+      "proj.view": "مشاهده",
+      "proj2.title": "آزمایشگاه امنیتی ۱",
+      "proj2.desc": "محیط تمرین باگ بانتی با آسیب\u200cپذیری\u200cهای طراحی\u200cشده برای یادگیری و تمرین کشف باگ.",
+      "proj.github": "گیت\u200cهاب",
+      "proj3.title": "آزمایشگاه امنیتی ۲",
+      "proj3.desc": "دومین آزمایشگاه باگ بانتی با سناریوهای متفاوت برای تمرین پیشرفته\u200cتر.",
+      "proj4.title": "پروژه\u200cهای طراحی سایت",
+      "proj4.desc": "ساخت سایت\u200cهای واکنش\u200cگرا و سفارشی برای مشتریان با تمرکز روی سرعت و کیفیت.",
+      "proj.request": "درخواست نمونه",
+      "sec.eyebrow": "05 — امنیت",
+      "sec.title": "باگ بانتی و <b>امنیت وب</b>",
+      "sec.desc": "امنیت برام فقط یه مهارت نیست، یه طرز فکره. توی باگ بانتی سعی می\u200cکنم مثل یه مهاجم فکر کنم و قبل از зло\u200cاستفاده\u200cکننده\u200cها، آسیب\u200cپذیری\u200cها رو پیدا کنم. برای یادگیری عملی، دو آزمایشگاه امنیتی ساختم که توشون می\u200cشه باگ\u200cهای واقعی رو تمرین کرد.",
+      "sec1.title": "تست نفوذ وب",
+      "sec1.desc": "کشف آسیب\u200cپذیری\u200cهای OWASP و کار با ابزارهایی مثل Burp Suite.",
+      "sec2.title": "Recon و شناخت هدف",
+      "sec2.desc": "جمع\u200cآوری اطلاعات و پیدا کردن سطح حمله قبل از تست.",
+      "sec3.title": "ساخت آزمایشگاه",
+      "sec3.desc": "طراحی محیط\u200cهای تمرینی برای یادگیری عملی باگ بانتی.",
+      "contact.eyebrow": "06 — تماس",
+      "contact.title": "بیا با هم <b>کار</b> کنیم",
+      "contact.sub": "چه برای طراحی سایت، چه برای همکاری امنیتی — خوشحال می\u200cشم در ارتباط باشیم.",
+      "contact.github": "گیت\u200cهاب",
+      "contact.site": "سایت",
+      "contact.email": "ایمیل",
+      "contact.cta": "ارسال پیام",
+      "footer.text": "ساخته\u200cشده با",
+      "footer.by": "توسط",
+      "typed.words": ["برنامه\u200cنویس", "طراح سایت", "باگ بانتی هانتر", "دانشجوی دانشگاه تبریز"]
+    },
+    en: {
+      "lang.label": "فارسی",
+      "nav.about": "About",
+      "nav.skills": "Skills",
+      "nav.path": "Path",
+      "nav.projects": "Projects",
+      "nav.security": "Security",
+      "nav.contact": "Contact",
+      "hero.name": "I'm <b>oziro</b>",
+      "hero.real": "Amin Ebrahimi · University of Tabriz Student",
+      "hero.desc": "Web developer and designer focused on building clean, fast, and responsive products. Alongside bug bounty and web security, I've published two security labs. My goal is to earn from web design and fully enter the security field long-term.",
+      "hero.cta1": "View Projects",
+      "hero.cta2": "Get in Touch",
+      "social.github": "GitHub",
+      "social.site": "Security Site",
+      "social.email": "Email",
+      "about.eyebrow": "01 — About Me",
+      "about.title": "A <b>Developer</b> with a <b>Security</b> Mindset",
+      "about.p1": "Hi! I'm Amin Ebrahimi, better known as <b>oziro</b>. I'm a student at the University of Tabriz and I love combining programming with security.",
+      "about.p2": "I've worked with many languages and technologies and chose web design as my short-term path for income. Alongside that, I pursue bug bounty and web security as my long-term goal and have built two security labs for bug bounty practice on my GitHub.",
+      "about.p3": "I care that what I build looks good, is secure, and performs well.",
+      "stat.lab": "Security Labs",
+      "stat.lang": "Languages & Tech",
+      "stat.site": "Security Website",
+      "stat.passion": "Passion for Learning",
+      "skills.eyebrow": "02 — Skills",
+      "skills.title": "What I <b>Know</b>",
+      "skills.sub": "I've worked with a wide range of languages and tools; from frontend web to security scripts.",
+      "skill1.title": "Web Design & Development",
+      "skill1.desc": "Building responsive, fast, and well-designed websites focused on user experience.",
+      "skill2.title": "Security & Bug Bounty",
+      "skill2.desc": "Finding vulnerabilities, web pen testing, and building labs for bug bounty practice.",
+      "skill3.title": "Multi-language Programming",
+      "skill3.desc": "Working with various languages to solve different problems; from automation to backend.",
+      "skill4.title": "Tools & Infrastructure",
+      "skill4.desc": "Working with Linux, Git, and command-line tools for development and security.",
+      "path.eyebrow": "03 — My Path",
+      "path.title": "Where I <b>Started</b> and Where I Am",
+      "path.sub": "A look at the key milestones of my journey.",
+      "step1.title": "Started Programming",
+      "step1.desc": "Entered the world of code out of curiosity and worked with multiple languages to build a solid foundation.",
+      "step2.title": "Entered Web Design",
+      "step2.desc": "Chose web design as my short-term income path and built responsive projects.",
+      "step3.title": "Joined University of Tabriz",
+      "step3.desc": "Studying at the University of Tabriz, deepening theoretical knowledge alongside practical projects.",
+      "step4.title": "Started Bug Bounty",
+      "step4.desc": "Focused on web security and started bug bounty to find real-world vulnerabilities.",
+      "step5.title": "Built Security Labs",
+      "step5.desc": "Designed and published two security labs for bug bounty practice, available on my GitHub.",
+      "step6.title": "Launched ozirosec.ir",
+      "step6.desc": "Launched my dedicated security website with the goal of fully entering the security field long-term.",
+      "proj.eyebrow": "04 — Projects",
+      "proj.title": "What I've <b>Built</b>",
+      "proj.sub": "A selection of projects in development and security.",
+      "proj1.desc": "My dedicated security website; the hub for bug bounty and web security activities.",
+      "proj.view": "View",
+      "proj2.title": "Security Lab 1",
+      "proj2.desc": "A bug bounty practice environment with designed vulnerabilities for learning and practice.",
+      "proj.github": "GitHub",
+      "proj3.title": "Security Lab 2",
+      "proj3.desc": "A second bug bounty lab with different scenarios for advanced practice.",
+      "proj4.title": "Web Design Projects",
+      "proj4.desc": "Building responsive and custom websites for clients focused on speed and quality.",
+      "proj.request": "Request Sample",
+      "sec.eyebrow": "05 — Security",
+      "sec.title": "Bug Bounty & <b>Web Security</b>",
+      "sec.desc": "Security isn't just a skill for me, it's a mindset. In bug bounty I try to think like an attacker and find vulnerabilities before malicious actors. For hands-on learning, I built two security labs where real bugs can be practiced.",
+      "sec1.title": "Web Pen Testing",
+      "sec1.desc": "Finding OWASP vulnerabilities and working with tools like Burp Suite.",
+      "sec2.title": "Recon & Target Research",
+      "sec2.desc": "Gathering information and identifying attack surfaces before testing.",
+      "sec3.title": "Building Labs",
+      "sec3.desc": "Designing practice environments for hands-on bug bounty learning.",
+      "contact.eyebrow": "06 — Contact",
+      "contact.title": "Let's <b>Work</b> Together",
+      "contact.sub": "Whether for web design or security collaboration — I'd love to connect.",
+      "contact.github": "GitHub",
+      "contact.site": "Website",
+      "contact.email": "Email",
+      "contact.cta": "Send Message",
+      "footer.text": "Built with",
+      "footer.by": "by",
+      "typed.words": ["Web Developer", "Web Designer", "Bug Bounty Hunter", "University Student"]
+    }
+  };
+
+  let currentLang = localStorage.getItem('lang') || 'fa';
+  const html = document.documentElement;
+  const typedEl = document.getElementById('typed');
+  const langBtn = document.getElementById('langToggle');
+  const langLabel = langBtn.querySelector('.lang-label');
+
+  // Typing state
+  let wi = 0, ci = 0, deleting = false, typeTimer = null;
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+
+    // Set html dir and lang
+    html.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+    html.setAttribute('lang', lang);
+
+    // Update all data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (T[lang][key] !== undefined) {
+        el.innerHTML = T[lang][key];
+      }
+    });
+
+    // Update title attributes
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (T[lang][key] !== undefined) {
+        el.setAttribute('title', T[lang][key]);
+      }
+    });
+
+    // Update page title
+    html.querySelector('title').textContent = lang === 'fa'
+      ? 'oziro | امین ابراهیمی'
+      : 'oziro | Amin Ebrahimi';
+
+    // Restart typing with new words
+    restartTyping();
+  }
+
+  function restartTyping() {
+    if (typeTimer) clearTimeout(typeTimer);
+    wi = 0; ci = 0; deleting = false;
+    type();
+  }
+
+  function type() {
+    const words = T[currentLang]['typed.words'];
+    const w = words[wi];
+    if (!deleting) {
+      typedEl.textContent = w.slice(0, ci++);
+      if (ci > w.length) { deleting = true; typeTimer = setTimeout(type, 1400); return; }
+    } else {
+      typedEl.textContent = w.slice(0, ci--);
+      if (ci < 0) { deleting = false; wi = (wi + 1) % words.length; ci = 0; }
+    }
+    typeTimer = setTimeout(type, deleting ? 55 : 110);
+  }
+
+  // Toggle on click
+  langBtn.addEventListener('click', () => {
+    applyLang(currentLang === 'fa' ? 'en' : 'fa');
+  });
+
+  // ===== Existing functionality =====
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Init language
+  applyLang(currentLang);
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: .15 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4 * 0.08) + 's';
+    io.observe(el);
+  });
+
+  document.querySelectorAll('.skill-card, .proj-card, .stat, .sec-card').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.06) + 's';
+  });
+
+  // counter
+  const counters = document.querySelectorAll('.num[data-count]');
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
+      let cur = 0;
+      const step = Math.max(1, Math.ceil(target / 40));
+      const tick = () => {
+        cur += step;
+        if (cur >= target) { el.textContent = target + suffix; }
+        else { el.textContent = cur + suffix; requestAnimationFrame(tick); }
+      };
+      tick();
+      cio.unobserve(el);
+    });
+  }, { threshold: .6 });
+  counters.forEach(c => cio.observe(c));
+
+  // parallax
+  const heroCard = document.querySelector('.hero-card');
+  window.addEventListener('mousemove', (e) => {
+    if (window.innerWidth < 900) return;
+    const x = (e.clientX / window.innerWidth - .5) * 14;
+    const y = (e.clientY / window.innerHeight - .5) * 14;
+    heroCard.style.transform = `translate(${x}px, ${y}px)`;
+  });
+
+  // tilt
+  document.querySelectorAll('.skill-card, .sec-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - .5;
+      const py = (e.clientY - r.top) / r.height - .5;
+      card.style.transform = `translateY(-8px) rotateX(${-py*8}deg) rotateY(${px*8}deg)`;
+    });
+    card.addEventListener('mouseleave', () => card.style.transform = '');
+  });
+})();
+</script>
+</body>
+</html>
