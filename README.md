@@ -4,7 +4,7 @@ This is the repository for my personal resume website, hosted for free via GitHu
 
 ## 🚀 Live Demo
 You can view the live website here: 
-👉 **[https://[YOUR-USERNAME].github.io/[REPOSITORY-NAME]/](https://[YOUR-USERNAME].github.io/[REPOSITORY-NAME]/)**
+👉 **[amin-oziro.vercel.app](https://amin-oziro.vercel.app/)**
 
 ---
 
@@ -20,7 +20,7 @@ You can view the live website here:
 
 ### 🌐 مشاهده آنلاین:
 برای مشاهده نسخه زنده رزومه روی لینک زیر کلیک کنید:
-👉 **[مشاهده وب‌سایت رزومه](https://[YOUR-USERNAME].github.io/[REPOSITORY-NAME]/)**
+👉 **[مشاهده وب‌سایت رزومه](https://amin-oziro.vercel.app/)**
 
 ---
 
