@@ -25,5 +25,5 @@ You can view the live website here:
 ---
 
 ## 📬 Contact Me / ارتباط با من
-* **Email:** [Your-Email@example.com]
-* **LinkedIn:** [Your LinkedIn Profile Link]
+* **Email:** eamin3906@gmail.com
+* **LinkedIn:** https://www.linkedin.com/in/amin-ebrahimi-665ba1346/
